@@ -11,7 +11,7 @@ const defaults = {
     delayInputCount: 3,
     clientIDSpace: 1000000,
     syncOptions: {
-        sync: qsOptions.sync || 'intrapolate',
+        sync: qsOptions.sync || 'interpolate',
         localObjBending: 0.0,
         remoteObjBending: 0.8,
         bendingIncrements: 6
@@ -24,7 +24,7 @@ if (options.syncOptions.sync === 'extrapolate')
     options.physicsEngine = new SimplePhysicsEngine();
 
 // create a client engine and a game engine
-const physicsEngine = new SimplePhysicsEngine({ collisionOptions: { COLLISION_DISTANCE: 25 } } );
+const physicsEngine = new SimplePhysicsEngine({ collisionOptions: { COLLISION_DISTANCE: 80} } );
 const gameOptions = Object.assign({ physicsEngine }, options);
 const gameEngine = new MyGameEngine(gameOptions);
 const clientEngine = new MyClientEngine(gameEngine, options);

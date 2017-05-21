@@ -20,7 +20,7 @@ const MyGameEngine = require(path.join(__dirname, 'src/common/MyGameEngine.js'))
 const SimplePhysicsEngine = require('lance-gg').physics.SimplePhysicsEngine;
 
 // Game Instances
-const physicsEngine = new SimplePhysicsEngine();
+const physicsEngine = new SimplePhysicsEngine({ collisionOptions : { COLLISION_DISTANCE: 80}});
 const gameEngine = new MyGameEngine({ physicsEngine, traceLevel: 1 });
 const serverEngine = new MyServerEngine(io, gameEngine, { debug: {}, updateRate: 6 });
 
