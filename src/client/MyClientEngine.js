@@ -1,9 +1,7 @@
 const ClientEngine = require('lance-gg').ClientEngine;
 const MyRenderer = require('../client/MyRenderer');
-const KeyboardControls = require('../client/KeyboardControls');
-const MobileControls = require('../client/MobileControls');
 const Tank = require('../common/Tank')
-const Utils = require('../common/Utils')
+const Keyboard = require('keyboardjs')
 
 class MyClientEngine extends ClientEngine {
 
@@ -11,65 +9,118 @@ class MyClientEngine extends ClientEngine {
         super(gameEngine, options, MyRenderer);
 
         this.gameEngine.on('client__preStep', this.preStep.bind(this));
+
+        // keep a reference for key press state
+        this.pressedKeys = {
+            down: false,
+            downRelease: false,
+            up: false,
+            upRelease: false,
+            left: false,
+            leftRelease: false,
+            right: false,
+            rightRelease: false,
+            space: false,
+            spaceRelease: false
+        };
+
+        let that = this;
+
+        Keyboard.bind('a', () => {
+            this.pressedKeys.left = true
+            this.pressedKeys.downRelease = false
+        })
+
+        Keyboard.bind('a', null, () => {
+            this.pressedKeys.leftRelease= true
+            this.pressedKeys.left = false
+        })
+
+        Keyboard.bind('s', () => {
+            this.pressedKeys.down = true
+            this.pressedKeys.downRelease = false
+        })
+
+        Keyboard.bind('s', null, () => {
+            this.pressedKeys.down = false
+            this.pressedKeys.downRelease = true
+        })
+
+        Keyboard.bind('d', () => {
+            this.pressedKeys.right = true
+            this.pressedKeys.rightRelease =false
+        })
+
+        Keyboard.bind('d', null, () => {
+            this.pressedKeys.right =false
+            this.pressedKeys.rightRelease = true
+        })
+
+        Keyboard.bind('w', () => {
+            this.pressedKeys.upRelease = false
+            this.pressedKeys.up = true
+        })
+
+        Keyboard.bind('w', null, () => {
+            this.pressedKeys.upRelease = true
+            this.pressedKeys.up = false
+        })
     }
 
-    start() {
-        super.start()
+    // our pre-step is to process all inputs
+    preStep() {
 
-        this.gameEngine.on('objectDestroyed', (obj) => {
-            if (obj.class == Tank && this.isOwnedByPlayer(obj)) {
-                document.body.classList.add('lostGame');
-                document.querySelector('#tryAgain').disabled = false;
-            }
-        });
 
-        this.gameEngine.once('renderer.ready', () => {
-            // click event for "try again" button
-            document.querySelector('#tryAgain').addEventListener('click', () => {
-                if (Utils.isTouchDevice()){
-                    this.renderer.enableFullScreen();
-                }
-                this.socket.emit('requestRestart');
-            });
+        if (this.pressedKeys.up) {
+            this.sendInput('up', { movement: true });
+            this.pressedKeys.up = false
+        }
 
-            document.querySelector('#joinGame').addEventListener('click', () => {
-                if (Utils.isTouchDevice()){
-                    this.renderer.enableFullScreen();
-                }
-                this.socket.emit('requestRestart');
-            });
+        else if (this.pressedKeys.upRelease) {
+            this.sendInput('up-release', { movement: true})
+            this.pressedKeys.upRelease = false
+        }
 
-            document.querySelector('#reconnect').addEventListener('click', () => {
-                window.location.reload();
-            });
+        if (this.pressedKeys.down) {
+            this.sendInput('down', { movement: true });
+            this.pressedKeys.down = false
+        }
 
-            if (Utils.isTouchDevice()){
-                this.controls = new MobileControls(this.renderer);
-            } else {
-                this.controls = new KeyboardControls(this.renderer);
-            }
+        else if (this.pressedKeys.downRelease) {
+            this.sendInput('down-release', { movement: true})
+            this.pressedKeys.downRelease = false
+        }
 
-            this.controls.on('fire', () => {
-                this.sendInput('space');
-            });
-        })
-     }
+        if (this.pressedKeys.left) {
+            this.sendInput('left', { movement: true });
+            this.pressedKeys.left = false
+        }
 
-        preStep() {
-            if (this.controls) {
-                if (this.controls.activeInput.up) {
-                    this.sendInput('up', { movement: true });
-                }
+        else if (this.pressedKeys.leftRelease) {
+            this.sendInput('left-release', { movement: true})
+            this.pressedKeys.leftRelease = false
+        }
 
-                if (this.controls.activeInput.left) {
-                    this.sendInput('left', { movement: true });
-                }
+        if (this.pressedKeys.right) {
+            this.sendInput('right', { movement: true });
+            this.pressedKeys.right = false
+        }
 
-                if (this.controls.activeInput.right) {
-                    this.sendInput('right', { movement: true });
-                }
-            }
+        else if (this.pressedKeys.rightRelease) {
+            this.sendInput('right-release', { movement: true})
+            this.pressedKeys.rightRelease= false
+        }
+
+        if (this.pressedKeys.space) {
+            this.sendInput('space', { movement: true });
+            this.pressedKeys.space = false
+        }
+
+        else if (this.pressedKeys.spaceRelease) {
+            this.sendInput('space-release', { movement: true})
+            this.pressedKeys.spaceRelease= false
         }
     }
 
-    module.exports = MyClientEngine;
+}
+module.exports = MyClientEngine;

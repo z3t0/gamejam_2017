@@ -2,7 +2,6 @@ const qsOptions = require('query-string').parse(location.search);
 const MyClientEngine = require('../client/MyClientEngine');
 const MyGameEngine = require('../common/MyGameEngine');
 const SimplePhysicsEngine = require('lance-gg').physics.SimplePhysicsEngine;
-require('../../assets/sass/main.scss');
 
 
 // default options, overwritten by query-string options
@@ -12,7 +11,7 @@ const defaults = {
     delayInputCount: 3,
     clientIDSpace: 1000000,
     syncOptions: {
-        sync: qsOptions.sync || 'extrapolate',
+        sync: qsOptions.sync || 'intrapolate',
         localObjBending: 0.0,
         remoteObjBending: 0.8,
         bendingIncrements: 6
