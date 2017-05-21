@@ -61,7 +61,7 @@ class Input {
             this.onKeyChange('shoot')
         })
 
-        Keyboard.bind('w', null, () => {
+        Keyboard.bind('space', null, () => {
             this.onKeyChange('shoot-release')
         })
     }
@@ -109,11 +109,15 @@ class Input {
             break
 
         case 'shoot':
-            if (!this.pressedKeys.shoot)
+            if (!this.pressedKeys.shoot) {
+                this.pressedKeys.shoot = true
                 this.emit('shoot')
+            }
             break
 
         case 'shoot-release':
+            this.pressedKeys.shootRelease = true
+            this.pressedKeys.shoot = false
             break
 
         default:
