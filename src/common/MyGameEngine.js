@@ -78,7 +78,7 @@ class MyGameEngine extends GameEngine {
     }
 
     addTank(playerId) {
-        let tank = new Tank(++this.world.idCount, 0, new TwoVector(0, 0))
+        let tank = new Tank(++this.world.idCount, 0, new TwoVector(500, 500))
 
         tank.playerId = playerId
         this.addObjectToWorld(tank)

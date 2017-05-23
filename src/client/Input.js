@@ -116,8 +116,9 @@ class Input {
             break
 
         case 'shoot-release':
-            this.pressedKeys.shootRelease = true
-            this.pressedKeys.shoot = false
+            setTimeout(()=> {
+this.pressedKeys.shoot= false
+            }, 1000)
             break
 
         default:

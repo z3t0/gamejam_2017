@@ -70,8 +70,8 @@ class MyRenderer extends Renderer {
         this.camera = new PIXI.Container();
         this.camera.addChild(this.layer1, this.layer2);
 
-        var background =  new PIXI.Sprite(PIXI.loader.resources.background.texture)
-        this.stage.addChild(background)
+        // var background =  new PIXI.Sprite(PIXI.loader.resources.background.texture)
+        // this.stage.addChild(background)
 
         this.stage.addChild(this.camera);
 
